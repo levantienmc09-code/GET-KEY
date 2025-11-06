@@ -1,1 +1,274 @@
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GETKEY - Letien09</title>
+<style>
+  :root{
+    --bg: #0a0f1a;
+    --card: #111827;
+    --accent: #06b6d4;
+    --accent2: #3b82f6;
+    --white: #eef2f7;
+    --muted: #9aa6b2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: 'Inter', system-ui, Arial, sans-serif;
+    display:flex;
+    height:100vh;
+    background:linear-gradient(180deg,#0a0f1a,#071025);
+    color:var(--white);
+  }
+  .sidebar{
+    width:180px;
+    background:linear-gradient(180deg,#061422,#05101a);
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+    border-right:1px solid rgba(255,255,255,0.05);
+  }
+  .brand{
+    font-size:22px;
+    font-weight:800;
+    color:var(--accent);
+    letter-spacing:2px;
+  }
+  .menuBtn{
+    width:100%;
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    text-align:center;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#042025;
+    transition:0.2s;
+  }
+  .menuBtn:hover{
+    opacity:0.85;
+  }
+  .content{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:32px;
+  }
+  .card{
+    background:var(--card);
+    padding:32px;
+    border-radius:16px;
+    max-width:600px;
+    width:100%;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.05);
+    text-align:center;
+  }
+  h1{
+    margin:0;
+    font-size:28px;
+    color:var(--accent);
+    margin-bottom:12px;
+  }
+  .sub{
+    color:var(--muted);
+    margin-bottom:24px;
+  }
+  input.keybox{
+    font-family:monospace;
+    font-size:20px;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:transparent;
+    color:var(--white);
+    width:100%;
+    text-align:center;
+    letter-spacing:1px;
+  }
+  .row{
+    margin-top:20px;
+  }
+  button.btn{
+    padding:12px 18px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:16px;
+    transition:0.2s;
+  }
+  .create{
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#042025;
+    margin-right:10px;
+  }
+  .create:hover{
+    opacity:0.9;
+  }
+  .copy{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--white);
+  }
+  .copy:hover{
+    opacity:0.85;
+  }
+  .meta{
+    margin-top:16px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .toast{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    background:#111827;
+    color:#ffd6d6;
+    padding:10px 16px;
+    border-radius:10px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.6);
+    display:none;
+    z-index:9999;
+  }
+  @media(max-width:720px){
+    .sidebar{display:none;}
+    .card{margin:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="brand">GETKEY</div>
+  <button class="menuBtn" id="menuCreate">TẠO KEY</button>
+  <div style="flex:1;"></div>
+  <div style="font-size:12px;color:var(--muted);text-align:center;">
+    Letien09_ + 16 ký tự<br>Khóa 24h
+  </div>
+</div>
+
+<div class="content">
+  <div class="card">
+    <h1>KEY FREE 24H</h1>
+    <p class="sub">Nhấn <strong>TẠO KEY</strong> để lấy key 20 ký tự. Không tạo lại trong 24 giờ trên cùng thiết bị.</p>
+    <input class="keybox" id="keyBox" placeholder="Chưa có key" readonly>
+    <div class="row">
+      <button class="btn create" id="createBtn">TẠO KEY</button>
+      <button class="btn copy" id="copyBtn">Sao chép</button>
+    </div>
+    <div class="meta" id="metaText">Chưa có key — bấm TẠO KEY</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Đã tạo key</div>
+
+<script>
+const STORAGE_KEY = 'letien_getkey_v2';
+const KEY_PREFIX = 'Letien09_';
+const RANDOM_LEN = 16;
+const TTL_MS = 24*60*60*1000;
+const MIN_CLICK_INTERVAL = 3000;
+
+const keyBox = document.getElementById('keyBox');
+const createBtn = document.getElementById('createBtn');
+const copyBtn = document.getElementById('copyBtn');
+const metaText = document.getElementById('metaText');
+const toast = document.getElementById('toast');
+const menuCreate = document.getElementById('menuCreate');
+
+let lastClick = 0;
+
+function randAlphanum(len){
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const buf = new Uint8Array(len);
+  crypto.getRandomValues(buf);
+  let s='';
+  for(let i=0;i<len;i++) s+=alphabet[buf[i]%alphabet.length];
+  return s;
+}
+
+function saveStored(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+function loadStored(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;} }
+
+function showToast(text='Đã tạo key',ms=2200){
+  toast.textContent=text;
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',ms);
+}
+
+function updateUI(){
+  const st = loadStored();
+  if(!st){
+    keyBox.value='';
+    metaText.textContent='Chưa có key — bấm TẠO KEY';
+    createBtn.disabled=false;
+    return;
+  }
+  const expires = st.created + TTL_MS;
+  if(Date.now()>=expires){
+    localStorage.removeItem(STORAGE_KEY);
+    keyBox.value='';
+    metaText.innerHTML='<span style="color:#ff8a8a">Key đã hết hạn.</span> Bấm TẠO KEY để tạo lại.';
+    createBtn.disabled=false;
+    return;
+  }
+  keyBox.value=st.key;
+  const rem = expires-Date.now();
+  const h=Math.floor(rem/(3600*1000));
+  const m=Math.floor((rem%(3600*1000))/(60*1000));
+  metaText.textContent=`Key hợp lệ — còn ${h} giờ ${m} phút.`;
+  createBtn.disabled=true;
+}
+
+async function handleCreate(){
+  const now = Date.now();
+  if(now - lastClick<MIN_CLICK_INTERVAL) return;
+  lastClick=now;
+  const st = loadStored();
+  if(st && (st.created+TTL_MS)>Date.now()){
+    showToast('Bạn đã có key hợp lệ — không thể tạo lại trong 24h',2500);
+    return;
+  }
+  const key = KEY_PREFIX + randAlphanum(RANDOM_LEN);
+  saveStored({key,created:Date.now()});
+  keyBox.value=key;
+  metaText.textContent='Key đã tạo — dùng được 24 giờ.';
+  createBtn.disabled=true;
+  showToast('Key đã tạo');
+}
+
+async function handleCopy(){
+  if(!keyBox.value) return;
+  try{
+    await navigator.clipboard.writeText(keyBox.value);
+    metaText.textContent='Đã sao chép vào clipboard.';
+  }catch(e){
+    keyBox.select();
+    document.execCommand('copy');
+    metaText.textContent='Đã sao chép (fallback).';
+  }
+}
+
+createBtn.addEventListener('click',handleCreate);
+menuCreate.addEventListener('click',handleCreate);
+copyBtn.addEventListener('click',handleCopy);
+
+updateUI();
+
+// basic client-side protections
+window.addEventListener('contextmenu', e=>e.preventDefault());
+window.addEventListener('keydown', e=>{
+  if(e.key==='F12') e.preventDefault();
+  if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='i')) e.preventDefault();
+  if(e.ctrlKey && (e.key==='U'||e.key==='u')) e.preventDefault();
+});
+</script>
+</body>
+</html>
