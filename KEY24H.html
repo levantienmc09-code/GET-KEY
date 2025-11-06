@@ -1,293 +1,273 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GETKEY - Letien09</title>
 <style>
   :root{
-    --bg:#071025; --card:#0b1220; --accent:#06b6d4; --muted:#9aa6b2; --white:#eef2f7;
+    --bg: #0a0f1a;
+    --card: #111827;
+    --accent: #06b6d4;
+    --accent2: #3b82f6;
+    --white: #eef2f7;
+    --muted: #9aa6b2;
   }
-  *{box-sizing:border-box}
-  body{margin:0;height:100vh;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#071025,#06101a);color:var(--white);display:flex}
-  .sidebar{width:160px;background:linear-gradient(180deg,#061422,#05101a);padding:24px 12px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;border-right:1px solid rgba(255,255,255,0.03)}
-  .brand{font-size:20px;letter-spacing:2px;color:var(--accent);font-weight:800}
-  .menuBtn{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--white);cursor:pointer;font-weight:700;width:100%;text-align:left}
-  .content{flex:1;padding:32px;display:flex;align-items:center;justify-content:center}
-  .card{width:100%;max-width:680px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-  h1{margin:0;font-size:24px;color:var(--accent);text-align:center}
-  p.sub{color:var(--muted);text-align:center;margin:6px 0 20px}
-  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
-  input.keybox{font-family:monospace;font-size:18px;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--white);min-width:360px;text-align:center}
-  button.btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-  .create{background:linear-gradient(90deg,var(--accent),#3b82f6);color:#042025}
-  .reset{background:#ef4444;color:white}
-  .copy{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
-  .meta{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
-  .small{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
-  .toast{position:fixed;right:18px;bottom:18px;background:#0a0a0a;color:#ffd6d6;padding:10px 14px;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6);display:none;z-index:9999}
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: 'Inter', system-ui, Arial, sans-serif;
+    display:flex;
+    height:100vh;
+    background:linear-gradient(180deg,#0a0f1a,#071025);
+    color:var(--white);
+  }
+  .sidebar{
+    width:180px;
+    background:linear-gradient(180deg,#061422,#05101a);
+    padding:24px 16px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+    border-right:1px solid rgba(255,255,255,0.05);
+  }
+  .brand{
+    font-size:22px;
+    font-weight:800;
+    color:var(--accent);
+    letter-spacing:2px;
+  }
+  .menuBtn{
+    width:100%;
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    text-align:center;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#042025;
+    transition:0.2s;
+  }
+  .menuBtn:hover{
+    opacity:0.85;
+  }
+  .content{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:32px;
+  }
+  .card{
+    background:var(--card);
+    padding:32px;
+    border-radius:16px;
+    max-width:600px;
+    width:100%;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.05);
+    text-align:center;
+  }
+  h1{
+    margin:0;
+    font-size:28px;
+    color:var(--accent);
+    margin-bottom:12px;
+  }
+  .sub{
+    color:var(--muted);
+    margin-bottom:24px;
+  }
+  input.keybox{
+    font-family:monospace;
+    font-size:20px;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:transparent;
+    color:var(--white);
+    width:100%;
+    text-align:center;
+    letter-spacing:1px;
+  }
+  .row{
+    margin-top:20px;
+  }
+  button.btn{
+    padding:12px 18px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:16px;
+    transition:0.2s;
+  }
+  .create{
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#042025;
+    margin-right:10px;
+  }
+  .create:hover{
+    opacity:0.9;
+  }
+  .copy{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--white);
+  }
+  .copy:hover{
+    opacity:0.85;
+  }
+  .meta{
+    margin-top:16px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .toast{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    background:#111827;
+    color:#ffd6d6;
+    padding:10px 16px;
+    border-radius:10px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.6);
+    display:none;
+    z-index:9999;
+  }
   @media(max-width:720px){
-    .sidebar{display:none}
-    .card{margin:20px}
+    .sidebar{display:none;}
+    .card{margin:16px;}
   }
 </style>
 </head>
 <body>
-  <div class="sidebar" role="navigation" aria-label="Menu">
-    <div class="brand">GETKEY</div>
-    <button class="menuBtn" id="menuCreate">TẠO KEY</button>
-    <button class="menuBtn" id="menuReset">RESET</button>
-    <div style="flex:1"></div>
-    <div style="font-size:12px;color:var(--muted)">Format: Letien09_ + 16 ký tự (chữ+số). Khóa 24h</div>
+<div class="sidebar">
+  <div class="brand">GETKEY</div>
+  <button class="menuBtn" id="menuCreate">TẠO KEY</button>
+  <div style="flex:1;"></div>
+  <div style="font-size:12px;color:var(--muted);text-align:center;">
+    Letien09_ + 16 ký tự<br>Khóa 24h
   </div>
+</div>
 
-  <div class="content">
-    <div class="card" role="main" aria-labelledby="title">
-      <h1 id="title">KEY FREE 24H</h1>
-      <p class="sub">Nhấn <strong>TẠO KEY</strong> để lấy mã. Sau khi có mã, không tạo lại trong 24 giờ trên cùng thiết bị.</p>
-
-      <div style="display:flex;justify-content:center;margin-bottom:12px;">
-        <input id="keyBox" class="keybox" placeholder="Chưa có key" readonly />
-      </div>
-
-      <div class="row">
-        <button class="btn create" id="createBtn">TẠO KEY</button>
-        <button class="btn reset" id="resetBtn">RESET</button>
-        <button class="btn copy" id="copyBtn">Sao chép</button>
-      </div>
-
-      <div class="meta" id="metaText">Chưa có key — bấm TẠO KEY.</div>
-      <div class="small">Đã thêm các biện pháp client-side để giảm khả năng lấy key nhiều lần. Muốn chống thật sự thì cần server.</div>
+<div class="content">
+  <div class="card">
+    <h1>KEY FREE 24H</h1>
+    <p class="sub">Nhấn <strong>TẠO KEY</strong> để lấy key 20 ký tự. Không tạo lại trong 24 giờ trên cùng thiết bị.</p>
+    <input class="keybox" id="keyBox" placeholder="Chưa có key" readonly>
+    <div class="row">
+      <button class="btn create" id="createBtn">TẠO KEY</button>
+      <button class="btn copy" id="copyBtn">Sao chép</button>
     </div>
+    <div class="meta" id="metaText">Chưa có key — bấm TẠO KEY</div>
   </div>
+</div>
 
-  <div id="toast" class="toast">Đã tạo key</div>
+<div class="toast" id="toast">Đã tạo key</div>
 
 <script>
-/*
-  Flow:
-  - TẠO KEY: nếu chưa có key hợp lệ cho thiết bị này → tạo key Letien09_ + 16 ký tự (secure random), lưu localStorage kèm fingerprint + created.
-            → hiển thị key, disable nút TẠO KEY trong 24h.
-  - RESET: chỉ dùng để xóa localStorage (chỉ khi bạn muốn reset). RESET cần confirm để tránh lỡ tay.
-  - Sao chép: copy vào clipboard.
-  - Bypass prevention (client-side):
-      * Lưu key + fingerprint (SHA-256 rút gọn) + created trong localStorage.
-      * Throttle bấm (3s).
-      * Chặn chuột phải, F12, Ctrl+Shift+I, Ctrl+U.
-      * Không cho tạo key mới khi còn key hợp lệ.
-  - Lưu ý: client-side không thể hoàn toàn ngăn bypass (người có devtools vẫn có cách). Server-side là cách duy nhất an toàn hoàn toàn.
-*/
-
-const STORAGE_KEY = 'letien_getkey_v1';
+const STORAGE_KEY = 'letien_getkey_v2';
 const KEY_PREFIX = 'Letien09_';
-const RANDOM_LEN = 16; // 16 ký tự ngẫu nhiên
-const TTL_MS = 24*60*60*1000; // 24 giờ
-const MIN_CLICK_INTERVAL = 3000; // 3s throttle
+const RANDOM_LEN = 16;
+const TTL_MS = 24*60*60*1000;
+const MIN_CLICK_INTERVAL = 3000;
 
-// DOM
 const keyBox = document.getElementById('keyBox');
 const createBtn = document.getElementById('createBtn');
-const resetBtn = document.getElementById('resetBtn');
 const copyBtn = document.getElementById('copyBtn');
 const metaText = document.getElementById('metaText');
 const toast = document.getElementById('toast');
 const menuCreate = document.getElementById('menuCreate');
-const menuReset = document.getElementById('menuReset');
 
 let lastClick = 0;
 
-// secure random alphanum
 function randAlphanum(len){
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const buf = new Uint8Array(len);
   crypto.getRandomValues(buf);
-  let s = '';
-  for(let i=0;i<len;i++) s += alphabet[buf[i] % alphabet.length];
+  let s='';
+  for(let i=0;i<len;i++) s+=alphabet[buf[i]%alphabet.length];
   return s;
 }
 
-// fingerprint: SHA-256 of some client attributes -> hex -> shortened
-async function fingerprint(){
-  const s = navigator.userAgent + '|' + navigator.platform + '|' + navigator.language + '|' + screen.width + 'x' + screen.height;
-  const enc = new TextEncoder().encode(s);
-  const digest = await crypto.subtle.digest('SHA-256', enc);
-  const hex = Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  return hex.slice(0,20); // rút gọn 20 ký tự
+function saveStored(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }
+function loadStored(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){return null;} }
+
+function showToast(text='Đã tạo key',ms=2200){
+  toast.textContent=text;
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',ms);
 }
 
-// storage helpers
-function loadStored(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  }catch(e){
-    return null;
-  }
-}
-function saveStored(obj){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
-}
-function clearStored(){
-  localStorage.removeItem(STORAGE_KEY);
-}
-
-// UI updates
-async function updateUI(){
+function updateUI(){
   const st = loadStored();
-  if(!st) {
-    keyBox.value = '';
-    metaText.textContent = 'Chưa có key — bấm TẠO KEY.';
-    createBtn.disabled = false;
+  if(!st){
+    keyBox.value='';
+    metaText.textContent='Chưa có key — bấm TẠO KEY';
+    createBtn.disabled=false;
     return;
   }
   const expires = st.created + TTL_MS;
-  if(Date.now() >= expires){
-    clearStored();
-    keyBox.value = '';
-    metaText.innerHTML = '<span style="color:#ff8a8a">Key đã hết hạn.</span> Bấm TẠO KEY để tạo lại.';
-    createBtn.disabled = false;
+  if(Date.now()>=expires){
+    localStorage.removeItem(STORAGE_KEY);
+    keyBox.value='';
+    metaText.innerHTML='<span style="color:#ff8a8a">Key đã hết hạn.</span> Bấm TẠO KEY để tạo lại.';
+    createBtn.disabled=false;
     return;
   }
-  // có key hợp lệ
-  keyBox.value = st.key;
-  const rem = expires - Date.now();
-  const h = Math.floor(rem / (3600*1000));
-  const m = Math.floor((rem % (3600*1000)) / (60*1000));
-  metaText.textContent = `Key hợp lệ — còn ${h} giờ ${m} phút.`;
-  createBtn.disabled = true;
+  keyBox.value=st.key;
+  const rem = expires-Date.now();
+  const h=Math.floor(rem/(3600*1000));
+  const m=Math.floor((rem%(3600*1000))/(60*1000));
+  metaText.textContent=`Key hợp lệ — còn ${h} giờ ${m} phút.`;
+  createBtn.disabled=true;
 }
 
-// show toast
-function showToast(text='Đã tạo key', ms=2200){
-  toast.textContent = text;
-  toast.style.display = 'block';
-  setTimeout(()=> toast.style.display = 'none', ms);
-}
-
-// create key flow
 async function handleCreate(){
   const now = Date.now();
-  if(now - lastClick < MIN_CLICK_INTERVAL) return; // throttle
-  lastClick = now;
-
-  // check existing
+  if(now - lastClick<MIN_CLICK_INTERVAL) return;
+  lastClick=now;
   const st = loadStored();
-  if(st && (st.created + TTL_MS) > Date.now()){
-    // nếu cùng fingerprint thì chặn; nếu khác fingerprint? vẫn chặn vì cùng trình duyệt/localStorage
-    showToast('Bạn đã có key hợp lệ — không thể tạo lại trong 24h', 2500);
+  if(st && (st.created+TTL_MS)>Date.now()){
+    showToast('Bạn đã có key hợp lệ — không thể tạo lại trong 24h',2500);
     return;
   }
-
-  // generate fingerprint and check if existing stored fingerprint differs? We use fingerprint to raise cost of moving key between devices.
-  const fpr = await fingerprint();
-
-  // generate key
-  const rand = randAlphanum(RANDOM_LEN);
-  const key = KEY_PREFIX + rand;
-
-  // store
-  const obj = { key, created: Date.now(), fpr };
-  saveStored(obj);
-
-  // update UI
-  keyBox.value = key;
-  metaText.textContent = 'Key đã tạo — dùng được 24 giờ.';
-  createBtn.disabled = true;
-  showToast('Key đã tạo và lưu');
-
-  // additional defense: write to cookie too (redundant) so simple localStorage wipe not always sufficient for casual users
-  try{
-    const cookieVal = encodeURIComponent(JSON.stringify({key:key,ts:Date.now(),f:fpr}));
-    document.cookie = `letien_key=${cookieVal}; max-age=${24*60*60}; path=/; samesite=strict`;
-  }catch(e){}
+  const key = KEY_PREFIX + randAlphanum(RANDOM_LEN);
+  saveStored({key,created:Date.now()});
+  keyBox.value=key;
+  metaText.textContent='Key đã tạo — dùng được 24 giờ.';
+  createBtn.disabled=true;
+  showToast('Key đã tạo');
 }
 
-// RESET flow (confirm)
-function handleReset(){
-  if(!confirm('Bạn chắc chắn muốn RESET (xóa key hiện tại)?')) return;
-  clearStored();
-  // clear cookie
-  document.cookie = 'letien_key=; max-age=0; path=/; samesite=strict';
-  keyBox.value = '';
-  metaText.textContent = 'Đã xóa key — bấm TẠO KEY để tạo lại.';
-  createBtn.disabled = false;
-  showToast('Đã reset',1400);
-}
-
-// copy
 async function handleCopy(){
   if(!keyBox.value) return;
   try{
     await navigator.clipboard.writeText(keyBox.value);
-    metaText.textContent = 'Đã sao chép vào clipboard.';
+    metaText.textContent='Đã sao chép vào clipboard.';
   }catch(e){
     keyBox.select();
     document.execCommand('copy');
-    metaText.textContent = 'Đã sao chép (fallback).';
+    metaText.textContent='Đã sao chép (fallback).';
   }
 }
 
-// lightweight anti-bypass UI protections
-window.addEventListener('contextmenu', e => e.preventDefault()); // chặn chuột phải
-window.addEventListener('keydown', e => {
-  if(e.key === 'F12') e.preventDefault();
-  if(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
-  if(e.ctrlKey && (e.key === 'U' || e.key === 'u')) e.preventDefault();
-});
+createBtn.addEventListener('click',handleCreate);
+menuCreate.addEventListener('click',handleCreate);
+copyBtn.addEventListener('click',handleCopy);
 
-// try to detect devtools opened (not reliable) and show warning + disable create button briefly
-(function detectDevTools(){
-  let opened = false;
-  const threshold = 160;
-  setInterval(() => {
-    const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-    const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-    if((widthThreshold || heightThreshold) && !opened){
-      opened = true;
-      // disable create for 5s to discourage casual devtools use
-      createBtn.disabled = true;
-      metaText.textContent = 'Phát hiện devtools — tạm thời khóa tạo key 5s';
-      setTimeout(() => { opened = false; updateUI(); }, 5000);
-    }
-  }, 1000);
-})();
-
-// menu bindings
-createBtn.addEventListener('click', handleCreate);
-menuCreate.addEventListener('click', handleCreate);
-
-resetBtn.addEventListener('click', handleReset);
-menuReset.addEventListener('click', handleReset);
-
-copyBtn.addEventListener('click', handleCopy);
-
-// when load page, try to recover from cookie if localStorage wiped (very weak)
-(function recoverFromCookie(){
-  try{
-    const cookies = document.cookie.split(';').map(s=>s.trim());
-    for(const c of cookies){
-      if(c.startsWith('letien_key=')){
-        const val = decodeURIComponent(c.split('=')[1] || '');
-        try{
-          const obj = JSON.parse(val);
-          // if cookie recent and no localStorage, restore
-          if(obj && obj.key && obj.ts && !loadStored()){
-            const age = Date.now() - (obj.ts || 0);
-            if(age < TTL_MS){
-              // restore to localStorage
-              const fObj = { key: obj.key, created: obj.ts, fpr: obj.f || 'cookie' };
-              saveStored(fObj);
-            }
-          }
-        }catch(e){}
-      }
-    }
-  }catch(e){}
-})();
-
-// initial UI
 updateUI();
 
+// basic client-side protections
+window.addEventListener('contextmenu', e=>e.preventDefault());
+window.addEventListener('keydown', e=>{
+  if(e.key==='F12') e.preventDefault();
+  if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='i')) e.preventDefault();
+  if(e.ctrlKey && (e.key==='U'||e.key==='u')) e.preventDefault();
+});
 </script>
 </body>
 </html>
